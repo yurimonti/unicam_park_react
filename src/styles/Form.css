@@ -1,0 +1,31 @@
+/* .Form-Buttons Button{
+    color: green;
+    background-color: black;
+    border: 0;
+    transition: 0.2s linear;
+}
+
+.Form-Buttons Button:hover:not(.active){
+    background-color: yellow;
+    color: black;
+}
+
+.Form-Buttons Button:active{
+    background-color: brown;
+}
+
+.Form-Buttons Button:focus{
+    background-color: yellow;
+    color: black;
+} */
+
+.Form-Buttons Button{
+    padding: 0;
+    min-height: 3vmax;
+    max-height: 3vmax;
+    min-width: 4vmax;
+    max-width: 4vmax;
+    float: left;
+    margin: 2px;
+    color: #000;
+}

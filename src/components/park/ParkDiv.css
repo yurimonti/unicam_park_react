@@ -1,0 +1,36 @@
+.ParkDiv-Buttons{
+/*     margin:auto 20% auto 20%; */
+    align-items: center;
+    width: fit-content;
+    
+}
+
+/* .ParkDiv-Buttons Button{
+    background-color: #32CD32;
+    border: 0;
+    padding: 0;
+    min-height: 3vmax;
+    max-height: 3vmax;
+    min-width: 4vmax;
+    max-width: 4vmax;
+    float: left;
+    margin: 2px;
+    color: #000;
+} */
+
+#bottoneAlert{
+    background-color: beige;
+/*     min-height: 8vmin;
+    max-height: 12vmin;
+    min-width: 12vmin;
+    max-width: 18vmin; */
+    border: 0;
+    padding: 0;
+    margin: 3px 3px;
+    clear: both;
+    color: #000;
+}
+
+
+/* <Button id={park.codeNumber} variant='info' type='button' key={park.codeNumber} onClick={()=>changeButton(park.codeNumber)}>
+          {park.codeNumber}</Button> */

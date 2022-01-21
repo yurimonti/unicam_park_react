@@ -1,0 +1,12 @@
+.LoginFooter,.LoginFooter-RegButton{
+    display: flex;
+    align-items: flex-start;
+}
+
+/* .LoginFooter-RegButton{
+    display: contents;
+} */
+
+.LoginFooter p{
+    margin: auto 2%;
+}
