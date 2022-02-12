@@ -1,0 +1,63 @@
+.LoginForm{
+    margin: 15vh 15vw;
+}
+
+.LoginForm-buttons Button{
+    background-color: blue;
+    border-color: blue;
+    margin: 0.2vh 0.2vw;
+    padding:auto auto;
+    transition: 0.2s ease-in-out;
+}
+
+.LoginForm-buttons Button:hover{
+    background-color: blueviolet;
+    border-color: blueviolet;
+}
+
+.LoginForm-buttons Button:focus{
+    background-color: blueviolet;
+    border-color: blueviolet;
+}
+
+
+
+
+/* .LoginForm{
+    text-align: center;
+}
+
+.LoginForm h2{
+    margin: 0 20px 40px 20px;
+}
+
+.LoginForm input:first-child{
+    color: black;
+    margin: auto;
+    width: 40vw;
+    min-width: 200px;
+    height: 3vh;
+    border-radius: 2px;
+    transition: linear;
+    border-color: black;
+}
+
+.LoginForm-password #bottone{
+    margin-left:20px;
+}
+
+
+.LoginForm input:hover{
+    border-color: rgb(70, 211, 211);
+}
+
+button{
+    width: auto;
+    height: auto;
+    padding: auto;
+    transition: linear;
+}
+
+button:hover{
+    border-color: rgb(70, 211, 211);
+} */
