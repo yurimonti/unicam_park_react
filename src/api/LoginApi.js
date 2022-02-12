@@ -7,7 +7,6 @@ async function registerUser(email,password){
         username:email
     }
     await api.post('/auth/registration',payload,{
-        headers: {'Access-Control-Allow-Origin':'*'},
         responseType:'json'
     }).then(res =>{
         console.log(res.data);
@@ -18,11 +17,11 @@ async function registerUser(email,password){
 
 async function loginUser(email,password){
     let payload ={
-        email:email,
+        username:email,
         password:password
     }
     await api.post('/auth/login',payload,{
-        headers: {'Access-Control-Allow-Origin':'*'},
+        headers: { 'Access-Control-Allow-Origin': '*' },
         responseType:'json'
     }).then(res =>{
         let result = res.data;
@@ -37,7 +36,7 @@ async function loginUser(email,password){
 async function logoutUser(){
     let payload = {refreshToken:localStorage.getItem('refresh')};
     await api.post('/auth/logout',payload,{
-        headers: {'Access-Control-Allow-Origin':'*','authorization':'Bearer '+localStorage.getItem('token')},
+        headers: {'Access-Control-Allow-Origin': '*','authorization':'Bearer '+localStorage.getItem('token')},
         responseType:'json'
     }).then(res=>{
         console.log(res);
@@ -48,4 +47,4 @@ async function logoutUser(){
     });
 }
 
-export default {registerUser, loginUser,logoutUser};
+export {registerUser, loginUser,logoutUser};

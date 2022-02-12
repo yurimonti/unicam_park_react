@@ -7,32 +7,34 @@ const api = axios.create({
     baseURL: baseURL
 });
 
-const refreshToken = async ()=>{
+const refreshToken = async () => {
     let payload = {
-        refreshToken:localStorage.getItem('refresh')
+        refreshToken: localStorage.getItem('refresh')
     }
-    await api.post('/auth/refresh',payload,{
-        headers: {'Access-Control-Allow-Origin':'*'},
-        responseType:'json'
-    }).then(res=>{
+    await api.post('/auth/refresh', payload, {
+        responseType: 'json'
+    }).then(res => {
         let result = res.data;
-        localStorage.setItem('token',result.accessToken);
-        localStorage.setItem('refresh',result.refreshToken);
-    }).catch(err=>{
+        localStorage.setItem('token', result.accessToken);
+        localStorage.setItem('refresh', result.refreshToken);
+    }).catch(err => {
         console.log(err);
     })
 }
 
-api.interceptors.request.use(async (config)=>{
+api.interceptors.request.use(async (config) => {
     let currentDate = new Date();
-    let decodedToken = jwtDecode(localStorage.getItem('token'));
-    if(decodedToken.exp*1000 < currentDate.getTime()){
-        await refreshToken();
-        config.headers["authorization"]="Bearer "+localStorage.getItem('token');
+    let token = localStorage.getItem('token');
+    if (token) {
+        let decodedToken = jwtDecode(localStorage.getItem('token'));
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            await refreshToken();
+            config.headers["authorization"] = "Bearer " + localStorage.getItem('token');
+        }
     }
     return config;
-},(error)=>{
+}, (error) => {
     return Promise.reject(error);
 });
 
-export {api};
+export { api };

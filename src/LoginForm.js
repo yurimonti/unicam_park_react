@@ -1,12 +1,19 @@
-import {useState} from "react";
+import {useState,useEffect} from "react";
 import './LoginForm.css'
-import apiLogin from './api/LoginApi'
+import {loginUser,registerUser,logoutUser} from './api/LoginApi'
 import {Form,Button} from 'react-bootstrap'
 
 const LoginForm = ()=>{
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('');
     const [show,setShow] = useState(false);
+
+    useEffect(()=>{
+        return ()=>{
+            setUsername('');
+            setPassword('');
+        }
+    },[])
 
     return(
         <div className="LoginForm">
@@ -25,10 +32,10 @@ const LoginForm = ()=>{
                 </Form.Group>
             </Form>
             <div className="LoginForm-buttons">
-                <Button variant="primary" type="button" onClick={()=>{apiLogin.loginUser(username,password)}}>
+                <Button variant="primary" type="button" onClick={()=>{ loginUser(username,password)}}>
                     Login
                 </Button>
-                <Button variant="primary" type="button" onClick={()=>{apiLogin.registerUser(username,password)}}>
+                <Button variant="primary" type="button" onClick={()=>{ registerUser(username,password)}}>
                     Register
                 </Button>
             </div>
