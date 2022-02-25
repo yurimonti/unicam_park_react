@@ -1,13 +1,28 @@
-.App {
+.App{
   background-color: #282c34;
   text-align: center;
-  justify-content: center;
   height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   color: white;
+  overflow: auto;
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+/* .App{
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+} */
+
+.TopBar{
+  margin-bottom: 60px;
 }
 
 

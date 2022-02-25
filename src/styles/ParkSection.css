@@ -1,0 +1,27 @@
+/* .Park{
+    float: left;
+    text-align: center;
+    align-items: center;
+}
+
+.Park button{
+    border:0;
+    padding:0;
+    margin: 2px 2px;
+    max-width: 10vw;
+    max-height: 10vh;
+    font-size: 2vh;
+}
+.ParkSection{
+    margin: auto 3vw;
+} */
+
+.Park{
+    font-size: 80%;
+    float: left;
+}
+
+.ParkSection-button{
+    clear: both;
+    display: flexbox;
+}

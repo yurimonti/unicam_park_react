@@ -1,4 +1,4 @@
-.LoginForm{
+/* .LoginForm{
     margin: 15vh 15vw;
 }
 
@@ -18,8 +18,30 @@
 .LoginForm-buttons Button:focus{
     background-color: blueviolet;
     border-color: blueviolet;
+} */
+
+.LoginForm {
+    margin: 15vh 15vw;
 }
 
+.LoginForm-buttons Button {
+    background-color: blue;
+    border-color: blue;
+    margin: 0.2vh 0.2vw;
+    padding: auto auto;
+    transition: 0.2s ease-in-out;
+}
+
+.LoginForm-buttons Button:hover {
+    background-color: blueviolet;
+    border-color: blueviolet;
+}
+
+.LoginForm-buttons Button:focus {
+    background-color: blueviolet;
+    border-color: blueviolet;
+}
+  
 
 
 

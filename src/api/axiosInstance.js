@@ -5,7 +5,11 @@ const baseURL = 'http://localhost:4000';
 
 const api = axios.create({
     baseURL: baseURL
-});
+})
+
+export function getApi(){
+    return api;
+}
 
 const refreshToken = async () => {
     let payload = {
@@ -37,4 +41,10 @@ api.interceptors.request.use(async (config) => {
     return Promise.reject(error);
 });
 
-export { api };
+api.interceptors.response.use(response=>{
+    console.log(response.status);
+    return response;
+},error=>{
+    console.log(error);
+    return Promise.reject(error);
+})
