@@ -20,8 +20,13 @@
     border-color: blueviolet;
 } */
 
-.LoginForm {
+/* .LoginForm {
     margin: 15vh 15vw;
+} */
+
+.LoginForm{
+    max-width: 580px;
+    margin: auto auto 30vh auto;
 }
 
 .LoginForm-buttons Button {

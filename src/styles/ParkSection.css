@@ -21,6 +21,10 @@
     float: left;
 }
 
+.ParkSection{
+    margin: auto;
+}
+
 .ParkSection-button{
     clear: both;
     display: flexbox;
