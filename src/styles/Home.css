@@ -1,0 +1,20 @@
+.TimePicker{
+    text-align: center;
+    width: fit-content;
+}
+
+.start .TimePicker{
+    width: min-content;
+    text-align: center;
+}
+
+.start,.end,.filterButton{
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    display: flex;
+}
+
+.end p{
+   margin:0 1vw;
+}

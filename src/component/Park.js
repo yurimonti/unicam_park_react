@@ -1,73 +1,90 @@
 import { useState, useEffect } from "react";
-import { Button,Card,Modal } from "react-bootstrap";
+import { Button, Card, Modal } from "react-bootstrap";
 import "../styles/ParkSection.css";
+import { getApi } from '../api/axiosInstance.js';
+import Ticket from "./Ticket";
+
 
 const Park = (props) => {
   const [park, setPark] = useState(props.park);
-  const [next,setNext] = useState('');
-  const [showModal,setShowModal] = useState(false);
+  const [info, setInfo] = useState({});
+  const [location, setLocation] = useState({});
+  const [tickets, setTickets] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+
+  const getInfo = async () => {
+    await getApi().post('/park/info', { parkId: park.id }, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      responseType: 'json'
+    }).then(res => {
+      setInfo(res.data);
+      setLocation(res.data.location);
+    }).catch(err => { console.log(err) });
+  }
+
+  const getNext = async () => {
+    await getApi().post('/park/next', { parkId: park.id }, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      responseType: 'json'
+    }).then(res => {
+      setTickets(res.data);
+    }).catch(err => { console.log(err) });
+  }
 
   useEffect(() => {
     setPark(park);
+    getInfo();
+    getNext();
   }, [park]);
 
-  const MyVerticallyCenteredModal = ()=>{
-    return (
+  //TODO:completare il metodo
+  const renderNextTickets = () => {
+    if(tickets[0]) return(<p>tickets</p>);
+    return tickets.map(t => {
+      return (<Ticket ticket={t} key={t.id} />);
+    })
+  }
+
+  const MyVerticallyCenteredModal = 
       <Modal
+        onHide={() => setShowModal(false)}
+        show={showModal}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton={() => {
+          setShowModal(false)
+        }}>
           <Modal.Title id="contained-modal-title-vcenter">
-            Modal heading
+            {/* TODO:inserire informazione location */}
+            {park.info + park.codeNumber + " " + location.description}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Centered Modal</h4>
-          <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </p>
+          <h4>{park.isEmpty ? "next:" + info.next : "end:" + info.end + "next:" + info.next}</h4>
+          {/* TODO: inserire la lista dei tickets */}
+          {renderNextTickets()}
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={()=>{
-            setShowModal(false)
-          }}>Close</Button>
-        </Modal.Footer>
       </Modal>
-    );
-  }
-
-  /* const changePark = (event)=>{
-        setPark(()=>{
-            props.park.isEmpty = !park.isEmpty;
-            return props.park;
-        });
-        event.preventDefault();
-    } */
 
   return (
     <div className="Park">
-        <Card
-          bg={park.isEmpty ?'success':'danger'}
-          text='light'
-          style={{ width:'100px', height:'100px' /* minWidth: '20vw', minHeight: '20vh', maxWidth: '30vw', maxHeight: '30vh' */ }}
-          className="float-left d-flex"
-          onClick={()=>{setShowModal(true)}}
-        >
-          <Card.Body>
-            <Card.Title style={{fontSize:20}}> {park.info + park.codeNumber} </Card.Title>
-            <Card.Text style={{fontSize:12}}>
-              {park.isEmpty ? 'available to '+next:'avilable from '+next}
-            </Card.Text>
-          </Card.Body>
-        </Card>
-        {MyVerticallyCenteredModal()}
-      {/* <Button variant={park.isEmpty ? "success" : "danger"}>
-        {park.info + park.codeNumber}
-      </Button> */}
+      <Card
+        bg={park.isEmpty ? 'success' : 'danger'}
+        text='light'
+        style={{ width: '100px', height: '100px' /* minWidth: '20vw', minHeight: '20vh', maxWidth: '30vw', maxHeight: '30vh' */ }}
+        className="float-left d-flex"
+        onClick={() => { setShowModal(true) }}
+      >
+        <Card.Body>
+          <Card.Title style={{ fontSize: 20 }}> {park.info + park.codeNumber} </Card.Title>
+          <Card.Text style={{ fontSize: 12 }}>
+            {park.isEmpty ? 'available' : 'reserved'}
+          </Card.Text>
+        </Card.Body>
+      </Card>
+      {MyVerticallyCenteredModal}
     </div>
   );
 };
