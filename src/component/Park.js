@@ -22,6 +22,7 @@ const Park = (props) => {
     }).catch(err => { console.log(err) });
   }
 
+  //TODO:renderizzare i tickets successivi.
   const getNext = async () => {
     await getApi().post('/park/next', { parkId: park.id }, {
       headers: { 'Access-Control-Allow-Origin': '*' },
@@ -57,12 +58,11 @@ const Park = (props) => {
           setShowModal(false)
         }}>
           <Modal.Title id="contained-modal-title-vcenter">
-            {/* TODO:inserire informazione location */}
             {park.info + park.codeNumber + " " + location.description}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>{park.isEmpty ? "next:" + info.next : "end:" + info.end + "next:" + info.next}</h4>
+          <h4>{park.isEmpty ? "next:" + info.next : "end:" + info.end+' '+ "next:" + info.next}</h4>
           {/* TODO: inserire la lista dei tickets */}
           {renderNextTickets()}
         </Modal.Body>

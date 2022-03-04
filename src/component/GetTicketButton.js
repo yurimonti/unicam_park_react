@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {getApi} from '../api/axiosInstance';
+import { getApi } from '../api/axiosInstance';
 import { Button, Modal, Card, ToggleButton } from 'react-bootstrap';
 import TimePicker from 'react-bootstrap-time-picker';
 import Park from './Park';
@@ -9,14 +9,16 @@ const GetTicketButton = () => {
   const [show, setShow] = useState(false);
   const [parks, setParks] = useState([]);
   const [timeNow, setTimeNow] = useState('');
-  const [start, setStart] = useState(true);
-  const [timeEnd, setTimeEnd] = useState('9:30:00');
-  const [timeStart, setTimeStart] = useState('9:00:00');
+  const [showStart, setShowStart] = useState(true);
+  const [start, setStart] = useState('9:00:00');
+  const [end, setEnd] = useState('9:30:00');
+  const [reload, setReload] = useState(false);
 
-
-  useEffect(()=>{
-    getParks();
-  },[]);
+  useEffect(() => {
+    if (reload)
+      getParks();
+    return () => { setReload(false) }
+  }, []);
 
   const getYMD = (now) => {
     let space = ' ';
@@ -35,29 +37,57 @@ const GetTicketButton = () => {
     return time;
   }
 
+  //metodo prova
+  /* const provaData = async () => {
+    let s = start.split(':');
+    let now = new Date();
+    now.setHours(s[0]);
+    now.setMinutes(s[1]);
+    now.setSeconds(s[2]);
+    now.setMilliseconds(0);
+    let payload = { date: now }
+    await getApi().post('/date', payload, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      responseType: 'json'
+    }).then(res => {
+      setDate(res.data);
+      console.log(res.data);
+    }).catch(err => { console.log(err) });
+  } */
+
 
   const getParks = async () => {
     let now = new Date();
-    let y = getYMD(now);
-    let endDate = y+' '+timeEnd;
-    let startDate = y+' ';
-    if(start) startDate += timeStart;
-    else startDate += timeNow;
-    let payload ={
-      start:startDate,
+    let startDate = now;
+    let e = end.split(':');
+    now.setHours(e[0]);
+    now.setMinutes(e[1]);
+    now.setSeconds(e[2]);
+    now.setMilliseconds(0);
+    let endDate = now;
+    if (showStart) {
+      let s = start.split(':');
+      now.setHours(s[0]);
+      now.setMinutes(s[1]);
+      now.setSeconds(s[2]);
+      now.setMilliseconds(0);
+      startDate = now;
+    }
+    let payload = {
+      start: startDate,
       end: endDate
     }
-    await getApi().post('/parks',payload, {
+    await getApi().post('/parks', payload, {
       headers: { 'Access-Control-Allow-Origin': '*' },
       responseType: 'json'
     }).then(res => {
       setParks(res.data);
     }).catch(err => { console.log(err) });
   }
-  
+
   const renderButtons = () => {
     return parks.map(park => {
-        return (<Park park={park} key={park.id} />)
+      return (<Park park={park} key={park.id} />)
     })
   }
 
@@ -71,22 +101,30 @@ const GetTicketButton = () => {
     return date + ' ' + result;
   }
 
+  /* const getTimeStart = (t) => {
+    t = t / 3600;
+    let f = Math.floor(t);
+    let result = t + ':00:00';
+    if (f < t && f > t - 1) result = f + ':30:00';
+    setStart(result);
+    alert(start);
+  } */
+
   const getTimeStart = (t) => {
     t = t / 3600;
     let f = Math.floor(t);
     let result = t + ':00:00';
     if (f < t && f > t - 1) result = f + ':30:00';
-    setTimeStart(result);
-    alert(result);
+    setStart(result);
   }
+
 
   const getTimeEnd = (t) => {
     t = t / 3600;
     let f = Math.floor(t);
     let result = t + ':00:00';
     if (f < t && f > t - 1) result = f + ':30:00';
-    setTimeEnd(result);
-    alert(result);
+    setEnd(result);
   }
 
 
@@ -98,31 +136,30 @@ const GetTicketButton = () => {
       <div className='start'>
         <ToggleButton /* className="mb-2" id="toggle-check" */
           type="checkbox" variant="outline-primary"
-          checked={start}
+          checked={showStart}
           onClick={() => {
-            setStart(!start);
+            setShowStart(!showStart);
             setTimeNow(getNow());
           }}
         >
-          {!start ? 'select start' : 'from now'}
+          {!showStart ? 'select start' : 'from now'}
         </ToggleButton>
-        {start ?
+        {showStart ?
           <TimePicker start="9:00" end="17:30"
-            step={30} format={24} value={timeStart} onChange={getTimeStart} className='TimePicker' />
+            step={30} format={24} onChange={getTimeStart} value={start} className='TimePicker' />
           : ''
         }
       </div>
       <div className='end'>
         <p>end</p>
         <TimePicker start="9:30" end="18:00"
-          step={30} format={24} value={timeEnd} onChange={getTimeEnd} className='TimePicker' />
+          step={30} format={24} value={end} onChange={getTimeEnd} className='TimePicker' />
       </div>
       <div className='filterButton'>
-        <Button type='button' onClick={() => {
-          getParks();
-        }} >filter</Button>
+        <Button type='button' /* onClick={async() => {await provaData()}} */
+          onClick={() => { getParks(); setReload(true); }}
+        >filter</Button>
       </div>
-
     </Modal.Header>
     <Modal.Body className="m-auto">
       {renderButtons()}
