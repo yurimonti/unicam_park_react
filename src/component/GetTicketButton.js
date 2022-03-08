@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getApi } from '../api/axiosInstance';
+import { getPublicApi } from '../api/axiosInstance';
 import { Button, Modal, Card, ToggleButton } from 'react-bootstrap';
 import TimePicker from 'react-bootstrap-time-picker';
 import Park from './Park';
@@ -77,10 +77,7 @@ const GetTicketButton = () => {
       start: startDate,
       end: endDate
     }
-    await getApi().post('/parks', payload, {
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      responseType: 'json'
-    }).then(res => {
+    await getPublicApi().post('/parks', payload).then(res => {
       setParks(res.data);
     }).catch(err => { console.log(err) });
   }

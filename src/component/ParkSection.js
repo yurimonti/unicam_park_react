@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getApi } from '../api/axiosInstance.js';
+import { getPublicApi } from '../api/axiosInstance.js';
 import '../styles/ParkSection.css';
 import Park from './Park';
 import GetTicketButton from './GetTicketButton';
@@ -9,10 +9,8 @@ const ParkSection = () => {
     const [parks, setParks] = useState([]);
 
     const getParks = async () => {
-        await getApi().get('/parks', {
-            headers: { 'Access-Control-Allow-Origin': '*' },
-            responseType: 'json'
-        }).then(res => {
+        await getPublicApi().get('/parks')
+        .then(res => {
             setParks(res.data);
         }).catch(err => { console.log(err) });
     }

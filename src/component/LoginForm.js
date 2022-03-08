@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getApi } from "../api/axiosInstance.js";
+import { getPublicApi } from "../api/axiosInstance.js";
 import "../styles/LoginForm.css";
 
 const LoginForm = () => {
@@ -22,11 +22,8 @@ const LoginForm = () => {
       username: username,
       password: password
     };
-    await getApi()
-      .post("/auth/login", payload, {
-        headers: { "Access-Control-Allow-Origin": "*" },
-        responseType: "json"
-      })
+    await getPublicApi()
+      .post("/auth/login", payload)
       .then((res) => {
         let result = res.data;
         localStorage.setItem("token", result.accessToken);
@@ -44,7 +41,7 @@ const LoginForm = () => {
       password: password,
       username: email
     };
-    await getApi()
+    await getPublicApi()
       .post("/auth/registration", payload, {
         responseType: "json"
       })

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Card, Modal } from "react-bootstrap";
 import "../styles/ParkSection.css";
-import { getApi } from '../api/axiosInstance.js';
+import { getPublicApi } from '../api/axiosInstance.js';
 import Ticket from "./Ticket";
 
 
@@ -13,7 +13,7 @@ const Park = (props) => {
   const [showModal, setShowModal] = useState(false);
 
   const getInfo = async () => {
-    await getApi().post('/park/info', { parkId: park.id }, {
+    await getPublicApi().post('/park/info', { parkId: park.id }, {
       headers: { 'Access-Control-Allow-Origin': '*' },
       responseType: 'json'
     }).then(res => {
@@ -24,10 +24,8 @@ const Park = (props) => {
 
   //TODO:renderizzare i tickets successivi.
   const getNext = async () => {
-    await getApi().post('/park/next', { parkId: park.id }, {
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      responseType: 'json'
-    }).then(res => {
+    await getPublicApi().post('/park/next', { parkId: park.id })
+    .then(res => {
       setTickets(res.data);
     }).catch(err => { console.log(err) });
   }
