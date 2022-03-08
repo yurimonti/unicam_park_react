@@ -28,9 +28,12 @@ const Home = () => {
 
   const postTicket = async (id) => {
     let payload = { parkId: id, start: new Date(), end: new Date('2022-03-08 18:12:00') };
-    await getPrivateApi().post('/api/ticket/create', payload)
+    await getPrivateApi().post('/api/ticket/create', payload,{
+      headers:{'authorization':'Bearer '+localStorage.getItem('token')}
+    })
       .then(res => {
         alert(res.data.park_id);
+        console.log(res.status);
       }).catch(err => { console.log(err) });
   }
 

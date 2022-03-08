@@ -1,35 +1,30 @@
 import { useState, useEffect } from "react";
 import { Navbar, Button, Container, Nav } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getApi } from "../api/axiosInstance";
+import { getPrivateApi } from "../api/axiosInstance";
 import '../App.css';
 
 const TopBar = () => {
-    const [refresh, setRefresh] = useState(false);
+    const [isLogged, setIsLogged] = useState(false);
     const navigate = useNavigate();
 
     useEffect(()=>{
-      if(localStorage.getItem('refresh')) setRefresh(true);
-      else setRefresh(false);
-    },[refresh])
+      if(localStorage.getItem('refresh')) setIsLogged(true);
+      else setIsLogged(false);
+    },[isLogged])
   
     const logout = async () => {
       let payload = { refreshToken: localStorage.getItem("refresh") };
-      await getApi()
-        .post("/auth/logout", payload, {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "authorization": "Bearer " + localStorage.getItem("token"),
-          },
-          responseType: "json"
+      await getPrivateApi().post("/auth/logout", payload,{
+          headers:{'authorization':'Bearer '+localStorage.getItem('token')}
         })
         .then((res) => {
-          console.log(res);
+          console.log(res.status);
           localStorage.removeItem("token");
           localStorage.removeItem("refresh");
         })
         .catch((err) => {
-          console.error(err);
+          console.error(err.status);
         });
     };
   
@@ -58,11 +53,11 @@ const TopBar = () => {
                 className="justify-content-end"
                 variant="primary"
                 onClick={() => {
-                  if (refresh) logout();
+                  if (isLogged) logout();
                   navigate("./login");
                 }}
               >
-                {refresh ? "logout" : "login"}
+                {isLogged ? "logout" : "login"}
               </Button>
             </Navbar.Collapse>
           </Container>
