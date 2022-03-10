@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getPublicApi } from '../api/axiosInstance.js';
+import { publicInstance } from '../api/axiosInstance.js';
 import '../styles/ParkSection.css';
 import Park from './Park';
 import GetTicketButton from './GetTicketButton';
@@ -8,10 +8,11 @@ import GetTicketButton from './GetTicketButton';
 const ParkSection = () => {
     const [parks, setParks] = useState([]);
 
-    const getParks = async () => {
-        await getPublicApi().get('/parks')
+    const getParks = () => {
+        publicInstance.get('/parks')
         .then(res => {
             setParks(res.data);
+            console.log(res.status);
         }).catch(err => { console.log(err) });
     }
 
@@ -36,35 +37,6 @@ const ParkSection = () => {
             {renderButtons()}
         </div>
     )
-    /* const [parks, setParks] = useState([]);
-    //const [reload,setReload] = useState(false);
-
-    const getParks = async()=>{
-        return await api.get('/prova/parks',{
-            headers: {'Access-Control-Allow-Origin':'*'},
-            responseType:'json'
-        }).then(res=>{
-            setParks(res.data);
-        }).catch(err=>{
-            console.error(err);
-        });
-    }
-
-    useEffect(()=>{
-        getParks();
-    },[])
-
-    const renderButtons = ()=>{
-        return parks.map(park=>{
-            return (<Park park={park} key={park.id} />)
-        })
-    }
-
-    return(
-        <div className="ParkSection">
-            {renderButtons()}
-        </div>
-    ) */
 }
 
 export default ParkSection;

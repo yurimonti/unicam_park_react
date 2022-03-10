@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navbar, Button, Container, Nav } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getPrivateApi } from "../api/axiosInstance";
+import { privateInstance } from "../api/axiosInstance";
 import '../App.css';
 
 const TopBar = () => {
@@ -13,11 +13,9 @@ const TopBar = () => {
       else setIsLogged(false);
     },[isLogged])
   
-    const logout = async () => {
+    const logout = () => {
       let payload = { refreshToken: localStorage.getItem("refresh") };
-      await getPrivateApi().post("/auth/logout", payload,{
-          headers:{'authorization':'Bearer '+localStorage.getItem('token')}
-        })
+      privateInstance.post("/auth/logout", payload)
         .then((res) => {
           console.log(res.status);
           localStorage.removeItem("token");

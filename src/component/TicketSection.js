@@ -1,10 +1,33 @@
 import { useState, useEffect } from "react";
-import { getApi } from "../api/axiosInstance";
+import { privateInstance } from "../api/axiosInstance";
+import Ticket from "./Ticket";
 
 const TicketSection = () => {
-  const [tickets, setTickets] = useState([]);
+  const [activeTickets, setActiveTickets] = useState([]);
+  const [pastTickets, setPastTickets] = useState([]);
 
-  const renderTickets = () => {};
+  useEffect(()=>{
+    getTickets();
+  },[])
+
+
+  const getTickets = ()=>{
+    privateInstance.get('tickets')
+      .then(res=>{
+        setActiveTickets(res.data.activeTickets);
+        setPastTickets(res.data.pastTickets);
+      }).catch(err=>{
+        console.log(err);
+      })
+  }
+
+  const renderActiveTickets = () => {
+    return activeTickets.map(t =>{return(<Ticket active={true} details={true} ticket={t} key={t.id} />)})
+  };
+  
+  const renderPastTickets = () => {
+    return pastTickets.map(t =>{return(<Ticket details={true} ticket={t} key={t.id} />)})
+  };
 
   return (
     <div className="TicketSection">
@@ -12,7 +35,12 @@ const TicketSection = () => {
       <div className="TicketSection-ActiveTickets">
         <p>Active</p>
         <hr />
-        {renderTickets()}
+        {renderActiveTickets()}
+      </div>
+      <div className="TicketSection-PastTickets">
+        <p>Past</p>
+        <hr />
+        {renderPastTickets()}
       </div>
     </div>
   );

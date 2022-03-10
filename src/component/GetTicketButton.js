@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getPublicApi } from '../api/axiosInstance';
-import { Button, Modal, Card, ToggleButton } from 'react-bootstrap';
+import { publicInstance, privateInstance } from '../api/axiosInstance';
+import { Button, Modal, ToggleButton } from 'react-bootstrap';
 import TimePicker from 'react-bootstrap-time-picker';
 import Park from './Park';
 import '../styles/Home.css';
@@ -13,6 +13,7 @@ const GetTicketButton = () => {
   const [start, setStart] = useState('9:00:00');
   const [end, setEnd] = useState('9:30:00');
   const [reload, setReload] = useState(false);
+  const [startBound, setStartBound] = useState('');
 
   useEffect(() => {
     if (reload)
@@ -20,10 +21,13 @@ const GetTicketButton = () => {
     return () => { setReload(false) }
   }, []);
 
-  const getYMD = (now) => {
-    let space = ' ';
-    let date = now.getFullYear() + space + now.getMonth() + space + now.getDay();
-    return date;
+  const postTicket = (id) => {
+    let payload = { parkId: id, start: getStartDate(), end: getEndDate() };
+    privateInstance.post('/api/ticket/create', payload)
+      .then(res => {
+        alert(res.data.park_id);
+        console.log(res.status);
+      }).catch(err => { console.log(err) });
   }
 
   const getHMS = (now) => {
@@ -37,75 +41,46 @@ const GetTicketButton = () => {
     return time;
   }
 
-  //metodo prova
-  /* const provaData = async () => {
+  const getStartDate = () => {
+    let startDate = new Date();
+    if (!showStart) return startDate;
     let s = start.split(':');
-    let now = new Date();
-    now.setHours(s[0]);
-    now.setMinutes(s[1]);
-    now.setSeconds(s[2]);
-    now.setMilliseconds(0);
-    let payload = { date: now }
-    await getApi().post('/date', payload, {
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      responseType: 'json'
-    }).then(res => {
-      setDate(res.data);
-      console.log(res.data);
-    }).catch(err => { console.log(err) });
-  } */
+    startDate.setHours(s[0]);
+    startDate.setMinutes(s[1]);
+    startDate.setSeconds(s[2]);
+    startDate.setMilliseconds(0);
+    return startDate;
+  }
 
+  const getEndDate = () => {
+    let endDate = new Date();
+    let s = end.split(':');
+    endDate.setHours(s[0]);
+    endDate.setMinutes(s[1]);
+    endDate.setSeconds(s[2]);
+    endDate.setMilliseconds(0);
+    return endDate;
+  }
 
-  const getParks = async () => {
-    let now = new Date();
-    let startDate = now;
-    let e = end.split(':');
-    now.setHours(e[0]);
-    now.setMinutes(e[1]);
-    now.setSeconds(e[2]);
-    now.setMilliseconds(0);
-    let endDate = now;
-    if (showStart) {
-      let s = start.split(':');
-      now.setHours(s[0]);
-      now.setMinutes(s[1]);
-      now.setSeconds(s[2]);
-      now.setMilliseconds(0);
-      startDate = now;
-    }
+  const getParks = () => {
+    let startDate = getStartDate();
+    let endDate = getEndDate();
     let payload = {
       start: startDate,
       end: endDate
-    }
-    await getPublicApi().post('/parks', payload).then(res => {
-      setParks(res.data);
-    }).catch(err => { console.log(err) });
+    };
+    publicInstance.post('/parks', payload)
+      .then(res => {
+        setParks(res.data);
+      }).catch(err => { console.log(err) });
   }
 
   const renderButtons = () => {
     return parks.map(park => {
-      return (<Park park={park} key={park.id} />)
+      return (<Park park={park} key={park.id}
+        click={() => { postTicket(park.id) }} />)
     })
   }
-
-  const getTime = (t) => {
-    t = t / 3600;
-    let f = Math.floor(t);
-    let result = t + ':00:00';
-    if (f < t && f > t - 1) result = f + ':30:00';
-    let now = new Date();
-    let date = getYMD(now);
-    return date + ' ' + result;
-  }
-
-  /* const getTimeStart = (t) => {
-    t = t / 3600;
-    let f = Math.floor(t);
-    let result = t + ':00:00';
-    if (f < t && f > t - 1) result = f + ':30:00';
-    setStart(result);
-    alert(start);
-  } */
 
   const getTimeStart = (t) => {
     t = t / 3600;
@@ -123,8 +98,6 @@ const GetTicketButton = () => {
     if (f < t && f > t - 1) result = f + ':30:00';
     setEnd(result);
   }
-
-
 
   const modalPark = <Modal show={show} fullscreen={true} scrollable={true} onHide={() => setShow(false)}>
     <Modal.Header closeButton={() => {
@@ -167,6 +140,7 @@ const GetTicketButton = () => {
     <div className='GetTicketButton'>
       <Button
         type='button'
+        disabled={!localStorage.getItem('token')}
         onClick={() => {
           setShow(true);
         }}

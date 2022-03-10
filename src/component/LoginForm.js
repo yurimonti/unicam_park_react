@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getPublicApi } from "../api/axiosInstance.js";
+import { publicInstance } from "../api/axiosInstance.js";
 import "../styles/LoginForm.css";
 
 const LoginForm = () => {
@@ -17,13 +17,12 @@ const LoginForm = () => {
     };
   }, []);
 
-  const loginUser = async (username, password) => {
+  const loginUser = (username, password) => {
     let payload = {
       username: username,
       password: password
     };
-    await getPublicApi()
-      .post("/auth/login", payload)
+    publicInstance.post("/auth/login", payload)
       .then((res) => {
         let result = res.data;
         localStorage.setItem("token", result.accessToken);
@@ -35,16 +34,13 @@ const LoginForm = () => {
       });
   };
 
-  const registerUser = async (email, password) => {
+  const registerUser = (email, password) => {
     let payload = {
       email: email,
       password: password,
       username: email
     };
-    await getPublicApi()
-      .post("/auth/registration", payload, {
-        responseType: "json"
-      })
+    publicInstance.post("/auth/registration", payload)
       .then((res) => {
         console.log(res.data);
       })

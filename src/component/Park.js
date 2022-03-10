@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button, Card, Modal } from "react-bootstrap";
+import {Card, Modal } from "react-bootstrap";
 import "../styles/ParkSection.css";
-import { getPublicApi } from '../api/axiosInstance.js';
+import { publicInstance } from '../api/axiosInstance.js';
 import Ticket from "./Ticket";
 
 
@@ -12,19 +12,17 @@ const Park = (props) => {
   const [tickets, setTickets] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-  const getInfo = async () => {
-    await getPublicApi().post('/park/info', { parkId: park.id }, {
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      responseType: 'json'
-    }).then(res => {
+  const getInfo = () => {
+    publicInstance.post('/park/info', { parkId: park.id })
+    .then(res => {
       setInfo(res.data);
       setLocation(res.data.location);
     }).catch(err => { console.log(err) });
   }
 
   //TODO:renderizzare i tickets successivi.
-  const getNext = async () => {
-    await getPublicApi().post('/park/next', { parkId: park.id })
+  const getNext = () => {
+    publicInstance.post('/park/next', { parkId: park.id })
     .then(res => {
       setTickets(res.data);
     }).catch(err => { console.log(err) });
@@ -36,9 +34,8 @@ const Park = (props) => {
     getNext();
   }, [park]);
 
-  //TODO:completare il metodo
   const renderNextTickets = () => {
-    if(tickets[0]) return(<p>tickets</p>);
+    if(tickets.length===0) return(<p>tickets</p>);
     return tickets.map(t => {
       return (<Ticket ticket={t} key={t.id} />);
     })
@@ -61,7 +58,6 @@ const Park = (props) => {
         </Modal.Header>
         <Modal.Body>
           <h4>{park.isEmpty ? "next:" + info.next : "end:" + info.end+' '+ "next:" + info.next}</h4>
-          {/* TODO: inserire la lista dei tickets */}
           {renderNextTickets()}
         </Modal.Body>
       </Modal>
@@ -73,7 +69,8 @@ const Park = (props) => {
         text='light'
         style={{ width: '100px', height: '100px' /* minWidth: '20vw', minHeight: '20vh', maxWidth: '30vw', maxHeight: '30vh' */ }}
         className="float-left d-flex"
-        onClick={() => { setShowModal(true) }}
+        
+        onClick={!props.click ? () => { setShowModal(true) } : props.click}
       >
         <Card.Body>
           <Card.Title style={{ fontSize: 20 }}> {park.info + park.codeNumber} </Card.Title>
@@ -86,4 +83,5 @@ const Park = (props) => {
     </div>
   );
 };
+
 export default Park;
