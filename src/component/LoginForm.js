@@ -3,12 +3,16 @@ import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { publicInstance } from "../api/axiosInstance.js";
 import "../styles/LoginForm.css";
+import { useAuthContext,useAuthUpdateContext } from "../helpers/AuthProvider.js";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isAdmin,setIsAdmin] = useState(false);
   const [show, setShow] = useState(false);
-  const navigate = useNavigate()
+  const isAuth = useAuthContext();
+  const setIsAuth = useAuthUpdateContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
@@ -20,14 +24,19 @@ const LoginForm = () => {
   const loginUser = (username, password) => {
     let payload = {
       username: username,
-      password: password
+      password: password,
+      isAdmin:isAdmin
     };
     publicInstance.post("/auth/login", payload)
       .then((res) => {
         let result = res.data;
         localStorage.setItem("token", result.accessToken);
         localStorage.setItem("refresh", result.refreshToken);
+        setIsAuth();
         console.log("authentication completed");
+        //FIXME:navigate to dashboard of administrator
+        if(isAdmin) navigate("../");
+        else navigate('../parks');
       })
       .catch((err) => {
         console.log(err);
@@ -99,8 +108,17 @@ const LoginForm = () => {
           <Form.Check
             type="checkbox"
             label="Show Password"
+            id="showPassword"
             onClick={() => {
               setShow(!show);
+            }}
+          />
+          <Form.Check
+            type="checkbox"
+            label="you are admin?"
+            id='isAdmin'
+            onClick={() => {
+              setIsAdmin(!isAdmin);
             }}
           />
         </Form.Group>
@@ -111,7 +129,7 @@ const LoginForm = () => {
           type="button"
           onClick={() => {
             loginUser(username, password);
-            navigate('../parks');
+            // navigate('../parks');
           }}
         >
           Login

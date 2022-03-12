@@ -1,25 +1,30 @@
-import { useState, useEffect } from "react";
 import { Navbar, Button, Container, Nav } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { privateInstance } from "../api/axiosInstance";
+import { useAuthContext,useAuthUpdateContext } from "../helpers/AuthProvider";
 import '../App.css';
 
 const TopBar = () => {
-    const [isLogged, setIsLogged] = useState(false);
+/*     const [isLogged, setIsLogged] = useState(false); */
+    const isAuth = useAuthContext();
+    const setIsAuth = useAuthUpdateContext();
     const navigate = useNavigate();
 
-    useEffect(()=>{
-      if(localStorage.getItem('refresh')) setIsLogged(true);
-      else setIsLogged(false);
-    },[isLogged])
+/*     useEffect(()=>{
+      if(localStorage.getItem('refresh')) setIsAuth(true);
+      else setIsAuth(false);
+    },[isAuth,setIsAuth]) */
   
     const logout = () => {
       let payload = { refreshToken: localStorage.getItem("refresh") };
-      privateInstance.post("/auth/logout", payload)
+      privateInstance.post("/auth/logout", payload,{
+        headers:{'authorization':'Bearer '+localStorage.getItem('token')}
+      })
         .then((res) => {
           console.log(res.status);
           localStorage.removeItem("token");
           localStorage.removeItem("refresh");
+          setIsAuth();
         })
         .catch((err) => {
           console.error(err.status);
@@ -51,11 +56,14 @@ const TopBar = () => {
                 className="justify-content-end"
                 variant="primary"
                 onClick={() => {
-                  if (isLogged) logout();
+                  if (isAuth) {
+                    logout();
+                    setIsAuth(false);
+                  };
                   navigate("./login");
                 }}
               >
-                {isLogged ? "logout" : "login"}
+                {isAuth ? "logout" : "login"}
               </Button>
             </Navbar.Collapse>
           </Container>

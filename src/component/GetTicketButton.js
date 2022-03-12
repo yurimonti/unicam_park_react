@@ -23,7 +23,9 @@ const GetTicketButton = () => {
 
   const postTicket = (id) => {
     let payload = { parkId: id, start: getStartDate(), end: getEndDate() };
-    privateInstance.post('/api/ticket/create', payload)
+    privateInstance.post('/api/ticket/create', payload,{
+      headers:{'authorization':'Bearer '+localStorage.getItem('token')}
+    })
       .then(res => {
         alert(res.data.park_id);
         console.log(res.status);

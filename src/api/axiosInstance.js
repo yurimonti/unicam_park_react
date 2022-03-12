@@ -15,30 +15,30 @@ const privateInstance = axios.create({
     headers: { 'authorization': 'Bearer ' + localStorage.getItem('token') }
 });
 
-const refreshToken = () => {
+const refreshToken = async() => {
     let payload = {
         refreshToken: localStorage.getItem('refresh')
     }
-    return publicInstance.post('/auth/refresh', payload);
-        /* .then(res => {
-            let result = res.data;
-            localStorage.setItem('token', result.accessToken);
-            localStorage.setItem('refresh', result.refreshToken);
-        }).catch(err => {
-            console.log(err);
-        }) */
-}
-
-privateInstance.interceptors.request.use(async (request) => {
-    let decodedJwt = jwtDecode(localStorage.getItem('token'));
-    if (dayjs.unix(decodedJwt.exp).diff(dayjs()) < 1) {
-        refreshToken().then(res => {
+    await publicInstance.post('/auth/refresh', payload)
+        .then(res => {
             let result = res.data;
             localStorage.setItem('token', result.accessToken);
             localStorage.setItem('refresh', result.refreshToken);
         }).catch(err => {
             console.log(err);
         })
+}
+
+privateInstance.interceptors.request.use(async (request) => {
+    let decodedJwt = jwtDecode(localStorage.getItem('token'));
+    if (dayjs.unix(decodedJwt.exp).diff(dayjs()) < 1) {
+        await refreshToken();/* .then(res => {
+            let result = res.data;
+            localStorage.setItem('token', result.accessToken);
+            localStorage.setItem('refresh', result.refreshToken);
+        }).catch(err => {
+            console.log(err);
+        }) */
         request.headers['authorization'] = 'Bearer ' + localStorage.getItem('token');
     }
     return request;

@@ -18,7 +18,9 @@ const Ticket = (props) => {
 
     const getParkOfTicket = () => {
         let payload = { parkId: ticket.park_id };
-        privateInstance.post('/parks/parkInfo', payload)
+        privateInstance.post('/parks/parkInfo', payload,{
+            headers:{'authorization':'Bearer '+localStorage.getItem('token')}
+        })
             .then(res => {
                 let data = res.data;
                 setAssociatedParkInfo(data);

@@ -2,15 +2,19 @@ import './App.css';
 import LoginForm from './component/LoginForm';
 import Home from './component/Home';
 import ParkSection from './component/ParkSection';
-import { BrowserRouter,Route,Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import TopBar from './component/TopBar';
 import TicketSection from './component/TicketSection';
+import { AuthProvider } from './helpers/AuthProvider';
+
 
 
 const App = () => {
+
   return (
     <div className="App">
       <BrowserRouter>
+        <AuthProvider>
           <TopBar />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -18,6 +22,7 @@ const App = () => {
             <Route path="/tickets" element={<TicketSection />} />
             <Route path="/login" element={<LoginForm />} />
           </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );

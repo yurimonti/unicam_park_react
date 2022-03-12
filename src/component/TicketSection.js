@@ -12,7 +12,9 @@ const TicketSection = () => {
 
 
   const getTickets = ()=>{
-    privateInstance.get('tickets')
+    privateInstance.get('/tickets',{
+      headers:{'authorization':'Bearer '+localStorage.getItem('token')}
+    })
       .then(res=>{
         setActiveTickets(res.data.activeTickets);
         setPastTickets(res.data.pastTickets);
