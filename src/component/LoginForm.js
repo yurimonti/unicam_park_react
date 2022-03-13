@@ -34,7 +34,6 @@ const LoginForm = () => {
         localStorage.setItem("refresh", result.refreshToken);
         setIsAuth();
         console.log("authentication completed");
-        //FIXME:navigate to dashboard of administrator
         if(isAdmin) navigate("../");
         else navigate('../parks');
       })

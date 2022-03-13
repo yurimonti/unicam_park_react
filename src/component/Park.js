@@ -20,7 +20,6 @@ const Park = (props) => {
     }).catch(err => { console.log(err) });
   }
 
-  //TODO:renderizzare i tickets successivi.
   const getNext = () => {
     publicInstance.post('/park/next', { parkId: park.id })
     .then(res => {
