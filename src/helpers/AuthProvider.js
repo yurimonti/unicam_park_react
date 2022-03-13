@@ -13,11 +13,13 @@ export function useAuthUpdateContext() {
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(localStorage.getItem("token"));
   function setToken() {
-    setAuth((value) => {
-      let current = value;
-      current = localStorage.getItem("token");
-      return current;
-    });
+    setAuth(localStorage.getItem("token"));
+    /* setAuth((value) => {
+      // let current = value;
+      value = localStorage.getItem("token");
+      return value;
+    }); */
+    
   }
 
   return (

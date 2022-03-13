@@ -5,10 +5,11 @@ import Ticket from "./Ticket";
 const TicketSection = () => {
   const [activeTickets, setActiveTickets] = useState([]);
   const [pastTickets, setPastTickets] = useState([]);
+  const [reload,setReload] = useState(true)
 
   useEffect(()=>{
     getTickets();
-  },[])
+  },[reload])
 
 
   const getTickets = ()=>{
@@ -23,8 +24,22 @@ const TicketSection = () => {
       })
   }
 
+  const deleteTicket = (ticketId)=>{
+    privateInstance.delete('/api/ticket',{
+        headers:{'authorization':'Bearer '+localStorage.getItem('token')},
+        data:{ticketId:ticketId}
+    }).then(res=>{
+        console.log(res.status);
+        setReload(prev=>!prev);
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+}
+
   const renderActiveTickets = () => {
-    return activeTickets.map(t =>{return(<Ticket active={true} details={true} ticket={t} key={t.id} />)})
+    return activeTickets.map(t =>{return(<Ticket ticket={t} key={t.id} active={true} 
+    isActive={true} details={true} click={()=>{deleteTicket(t.id)}} />)})
   };
   
   const renderPastTickets = () => {
@@ -37,7 +52,7 @@ const TicketSection = () => {
       <div className="TicketSection-ActiveTickets">
         <p>Active</p>
         <hr />
-        {renderActiveTickets()}
+        {reload ? renderActiveTickets() : renderActiveTickets()}
       </div>
       <div className="TicketSection-PastTickets">
         <p>Past</p>

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { privateInstance } from '../api/axiosInstance'
 
 const Ticket = (props) => {
     const [ticket, setTicket] = useState(props.ticket);
-    const [details,setDetails] = useState(props.details);
+    const [details, setDetails] = useState(props.details);
     const [associatedParkInfo, setAssociatedParkInfo] = useState({});
     const [info, setInfo] = useState({
         start: new Date(ticket.start),
@@ -12,14 +12,14 @@ const Ticket = (props) => {
     });
 
     useEffect(() => {
-        if(details)
-        getParkOfTicket();
+        if (details)
+            getParkOfTicket();
     }, [ticket]);
 
     const getParkOfTicket = () => {
         let payload = { parkId: ticket.park_id };
-        privateInstance.post('/parks/parkInfo', payload,{
-            headers:{'authorization':'Bearer '+localStorage.getItem('token')}
+        privateInstance.post('/parks/parkInfo', payload, {
+            headers: { 'authorization': 'Bearer ' + localStorage.getItem('token') }
         })
             .then(res => {
                 let data = res.data;
@@ -32,7 +32,7 @@ const Ticket = (props) => {
 
     return (
         <div className="Ticket" style={{ display: 'flex' }}>
-            {props.details ? 
+            {props.details ?
                 <Card
                     bg={props.active ? 'primary' : 'secondary'}
                     text='white'
@@ -46,8 +46,11 @@ const Ticket = (props) => {
                             start: {info.start?.toLocaleString()} end: {info.end?.toLocaleString()}
                         </Card.Text>
                     </Card.Body>
-                </Card> : 
-                    <p> start: {info.start?.toLocaleString()} end: {info.end?.toLocaleString()} </p>
+                    {props.isActive ? <Card.Footer>
+                        <Button variant="danger" type="button" onClick={props.click}>delete</Button>
+                    </Card.Footer> : ''}
+                </Card> :
+                <p> start: {info.start?.toLocaleString()} end: {info.end?.toLocaleString()} </p>
             }
         </div>
     )

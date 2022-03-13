@@ -58,7 +58,7 @@ const TopBar = () => {
                 onClick={() => {
                   if (isAuth) {
                     logout();
-                    setIsAuth(false);
+                    setIsAuth();
                   };
                   navigate("./login");
                 }}

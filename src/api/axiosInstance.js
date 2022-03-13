@@ -15,9 +15,9 @@ const privateInstance = axios.create({
     headers: { 'authorization': 'Bearer ' + localStorage.getItem('token') }
 });
 
-const refreshToken = async() => {
+const refreshToken = async(refresh) => {
     let payload = {
-        refreshToken: localStorage.getItem('refresh')
+        refreshToken: refresh
     }
     await publicInstance.post('/auth/refresh', payload)
         .then(res => {
@@ -32,7 +32,7 @@ const refreshToken = async() => {
 privateInstance.interceptors.request.use(async (request) => {
     let decodedJwt = jwtDecode(localStorage.getItem('token'));
     if (dayjs.unix(decodedJwt.exp).diff(dayjs()) < 1) {
-        await refreshToken();/* .then(res => {
+        await refreshToken(localStorage.getItem('refresh'));/* .then(res => {
             let result = res.data;
             localStorage.setItem('token', result.accessToken);
             localStorage.setItem('refresh', result.refreshToken);

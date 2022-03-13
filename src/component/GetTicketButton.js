@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { publicInstance, privateInstance } from '../api/axiosInstance';
 import { Button, Modal, ToggleButton } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
 import TimePicker from 'react-bootstrap-time-picker';
 import Park from './Park';
 import '../styles/Home.css';
 
-const GetTicketButton = () => {
+const GetTicketButton = (props) => {
   const [show, setShow] = useState(false);
   const [parks, setParks] = useState([]);
-  const [timeNow, setTimeNow] = useState('');
   const [showStart, setShowStart] = useState(true);
   const [start, setStart] = useState('9:00:00');
   const [end, setEnd] = useState('9:30:00');
   const [reload, setReload] = useState(false);
-  const [startBound, setStartBound] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (reload)
@@ -27,20 +27,10 @@ const GetTicketButton = () => {
       headers:{'authorization':'Bearer '+localStorage.getItem('token')}
     })
       .then(res => {
-        alert(res.data.park_id);
+        alert('Park reserved');
         console.log(res.status);
+        navigate('../tickets');
       }).catch(err => { console.log(err) });
-  }
-
-  const getHMS = (now) => {
-    let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-    return time;
-  }
-
-  const getNow = () => {
-    let now = new Date();
-    let time = getHMS(now);
-    return time;
   }
 
   const getStartDate = () => {
@@ -103,7 +93,7 @@ const GetTicketButton = () => {
 
   const modalPark = <Modal show={show} fullscreen={true} scrollable={true} onHide={() => setShow(false)}>
     <Modal.Header closeButton={() => {
-      setShow(false)
+      setShow(false);
     }}>
       <div className='start'>
         <ToggleButton /* className="mb-2" id="toggle-check" */
@@ -111,7 +101,6 @@ const GetTicketButton = () => {
           checked={showStart}
           onClick={() => {
             setShowStart(!showStart);
-            setTimeNow(getNow());
           }}
         >
           {!showStart ? 'select start' : 'from now'}
