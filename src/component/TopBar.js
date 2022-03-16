@@ -1,5 +1,5 @@
 import { Navbar, Button, Container, Nav } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { privateInstance } from "../api/axiosInstance";
 import { useAuthContext,useAuthUpdateContext } from "../helpers/AuthProvider";
 import '../App.css';
@@ -48,9 +48,9 @@ const TopBar = () => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
-                <Nav.Link href="/">Home</Nav.Link>
-                <Nav.Link href="/parks">Parks</Nav.Link>
-                <Nav.Link href="/tickets">Tickets</Nav.Link>
+                <Nav.Link as={Link} to="/">Home</Nav.Link>
+                <Nav.Link as={Link} to="/parks">Parks</Nav.Link>
+                <Nav.Link as={Link} to="/tickets">Tickets</Nav.Link>
               </Nav>
               <Button
                 className="justify-content-end"
