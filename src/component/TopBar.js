@@ -35,10 +35,10 @@ const TopBar = () => {
       <div className="TopBar">
         <Navbar bg="primary" variant="dark" expand="md" fixed="top">
           <Container>
-            <Navbar.Brand href="https://www.unicam.it/">
+            <Navbar.Brand target="_blank" referrerPolicy="no-referrer" href="https://www.unicam.it/">
               <img
                 alt=""
-                src="../logo_unicam.svg"
+                src="./Logo_unicam.png"
                 width="30"
                 height="30"
                 className="d-inline-block align-top"
